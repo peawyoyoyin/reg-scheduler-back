@@ -13,6 +13,17 @@ The backend for phootip/reg-scheduler. Functionalities include getting data from
     | courseId | Course Id |
     | courseName | Course Name |
 
+    #### response schema
+    ```
+    Response [
+      {
+        courseid: String,
+        coursename: String
+      },
+      ...
+    ]
+    ```
+
   - GET `/courseinfo`
 
     returns information about the course with `courseId`
@@ -24,3 +35,30 @@ The backend for phootip/reg-scheduler. Functionalities include getting data from
     | name | description |
     | ---- | ----------- |
     | courseId | Course Id **(required)**
+
+    #### response schema
+    ```
+    Response {
+      faculty,
+      fullName,
+      id,
+      name,
+      prog,
+      finalExam,
+      midExam,
+      secs: [Section]
+    }
+
+    Section {
+      building,
+      day: [Day],
+      note,
+      room,
+      seat,
+      secno,
+      status,
+      teacher: [String],
+      time,
+      type
+    }
+    ```
