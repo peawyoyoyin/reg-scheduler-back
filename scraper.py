@@ -51,19 +51,19 @@ class Scraper():
 
         datat2 = table2.find_all('font')
         result.update({
-            'year_sem': datat2[0].get_text().strip(),
+            'yearSem': datat2[0].get_text().strip(),
             'prog': datat2[1].get_text().strip(),
             'id': datat2[2].get_text().strip(),
             'name': datat2[3].get_text().strip(),
-            'thai_name': datat2[4].get_text().strip(),
-            'full_name': datat2[5].get_text().strip(),
+            'thaiName': datat2[4].get_text().strip(),
+            'fullName': datat2[5].get_text().strip(),
             'faculty': datat2[6].get_text().strip().replace('\xa0', ' ')
         })
 
         datat4 = table4.find_all('font')
         result.update({
-            'mid_exam': datat4[1].get_text().strip(),
-            'final_exam': datat4[3].get_text().strip(),
+            'midExam': datat4[1].get_text().strip(),
+            'finalExam': datat4[3].get_text().strip(),
         })
 
         secs = []
