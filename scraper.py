@@ -72,7 +72,7 @@ class Scraper():
             if idx > 1:
                 data = sec.find_all('td')
                 secs.append({
-                    'status': ('close' if data[0].get_text().strip() == '' else 'open'),
+                    'status': ('open' if data[0].get_text().strip() == '' else 'close'),
                     'secno': re.search(r'\d+', data[1].get_text().strip()).group(),
                     'type': data[2].get_text().strip(),
                     'day': data[3].get_text().strip().split(),
