@@ -34,7 +34,7 @@ class Scraper():
                 data = course.find_all('font')
                 result.append({
                     'courseno': data[0].get_text().strip(),
-                    'coursname': data[2].get_text().strip()
+                    'coursename': data[2].get_text().strip()
                 })
         return result
 
