@@ -19,7 +19,15 @@ def _transformExamDate(examDate):
         15 พ.ค. 2561 เวลา 8:30-11:30 น.
     '''
     if examDate.startswith('TDF'):
-        return 'tdf'
+        return {
+            'day': 'tdf',
+            'month': 'tdf',
+            'year': 'tdf',
+            'time': {
+                'start': 'tdf',
+                'end': 'tdf'
+            }
+        }
     
     tokens = examDate.split(' ')
     time = tokens[4].split('-')
