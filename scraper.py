@@ -40,7 +40,11 @@ def _buildTimeRanges(time, days):
     '''
     tokens = time.split('-')
     if len(tokens) != 2:
-        return 'tdf'
+        return {
+            'day': 'tdf',
+            'start': 'tdf',
+            'end' : 'tdf',
+        }
     
     return [{
         'day': DAY_NAMES_TRANSFORM.get(day, 'invalid-day'),
