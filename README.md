@@ -39,26 +39,44 @@ The backend for phootip/reg-scheduler. Functionalities include getting data from
     #### response schema
     ```
     Response {
-      faculty,
-      fullName,
       id,
-      name,
+      name: {
+        abbr,
+        th,
+        en
+      },
+      faculty,
       prog,
-      finalExam,
-      midExam,
+      finalExamDate: ExamTimeRange,
+      midExam: ExamTimeRange,
       secs: [Section]
     }
 
     Section {
       building,
-      day: [Day],
-      note,
+      remark,
       room,
       seat,
-      secno,
+      sectionNumber,
       status,
       teacher: [String],
-      time,
-      type
+      type,
+      timeRanges: [TimeRange]
+    }
+
+    ExamTimeRange {
+      day,
+      month,
+      year,
+      time: {
+        start,
+        end
+      }
+    }
+
+    TimeRange {
+      day,
+      end,
+      start
     }
     ```
