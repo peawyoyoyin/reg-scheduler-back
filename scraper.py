@@ -33,8 +33,8 @@ class Scraper():
             for course in courses:
                 data = course.find_all('font')
                 result.append({
-                    'courseid': data[0].get_text().strip(),
-                    'coursename': data[2].get_text().strip()
+                    'courseId': data[0].get_text().strip(),
+                    'courseName': data[2].get_text().strip()
                 })
         return result
 
@@ -54,16 +54,18 @@ class Scraper():
             'yearSem': datat2[0].get_text().strip(),
             'prog': datat2[1].get_text().strip(),
             'id': datat2[2].get_text().strip(),
-            'name': datat2[3].get_text().strip(),
-            'thaiName': datat2[4].get_text().strip(),
-            'fullName': datat2[5].get_text().strip(),
+            'name': {
+                'abbr':datat2[3].get_text().strip(),
+                'th': datat2[4].get_text().strip(),
+                'en': datat2[5].get_text().strip(),
+            },
             'faculty': datat2[6].get_text().strip().replace('\xa0', ' ')
         })
 
         datat4 = table4.find_all('font')
         result.update({
             'midExam': datat4[1].get_text().strip(),
-            'finalExam': datat4[3].get_text().strip(),
+            'finalExam' : datat4[3].get_text().strip(),
         })
 
         secs = []
@@ -71,19 +73,22 @@ class Scraper():
         for idx, sec in enumerate(datat3):
             if idx > 1:
                 data = sec.find_all('td')
-                secs.append({
-                    'status': ('open' if data[0].get_text().strip() == '' else 'close'),
-                    'secno': re.search(r'\d+', data[1].get_text().strip()).group(),
-                    'type': data[2].get_text().strip(),
-                    'day': data[3].get_text().strip().split(),
-                    'time': data[4].get_text().strip(),
-                    'building': data[5].get_text().strip(),
-                    'room': data[6].get_text().strip(),
-                    'teacher': data[7].get_text().strip().split(','),
-                    'note': data[8].get_text().strip(),
-                    'seat': (data[9].get_text().strip() if len(data) > 9 else '')
-                })
-        result.update({'secs': secs})
+                try:
+                    secs.append({
+                        'status': ('open' if data[0].get_text().strip() == '' else 'close'),
+                        'sectionNumber': re.search(r'\d+', data[1].get_text().strip()).group(),
+                        'type': data[2].get_text().strip(),
+                        'day': data[3].get_text().strip().split(),
+                        'time': data[4].get_text().strip(),
+                        'building': data[5].get_text().strip(),
+                        'room': data[6].get_text().strip(),
+                        'teacher': data[7].get_text().strip().split(','),
+                        'note': data[8].get_text().strip(),
+                        'seat': (data[9].get_text().strip() if len(data) > 9 else '')
+                    })
+                except:
+                    pass
+        result.update({'sections': secs})
 
         return result
 
