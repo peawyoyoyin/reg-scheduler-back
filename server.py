@@ -21,9 +21,9 @@ def queryCourseList():
     course_no = request.args.get('courseId', '')
     course_type = request.args.get('courseType', '')
     gened_code = request.args.get('genedCode', '')
-    return jsonify(
-            scp.getlist(course_no, course_name, course_type, gened_code)
-        )
+    return jsonify({
+            'courses': scp.getlist(course_no, course_name, course_type, gened_code)
+        })
 
 @app.route('/courseinfo')
 def getCourseData():
@@ -31,7 +31,7 @@ def getCourseData():
         courseNo
     '''
     course_no = request.args.get('courseId')
-    if course_no == None:
+    if course_no is None:
         return 'courseId is required', 400
     return jsonify(
         scp.getcourseinfo(course_no)

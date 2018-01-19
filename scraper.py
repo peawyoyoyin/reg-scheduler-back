@@ -2,6 +2,51 @@ import requests
 import bs4
 import re
 
+MONTH_NAMES = ['','ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+DAY_NAMES_TRANSFORM = {
+    'MO': 'MON',
+    'TU': 'TUE',
+    'WE': 'WED',
+    'TH': 'THU',
+    'FR': 'FRI',
+    'SA': 'SAT',
+    'SU': 'SUN',
+}
+
+def _transformExamDate(examDate):
+    '''
+        exam dates comes in this format:
+        15 พ.ค. 2561 เวลา 8:30-11:30 น.
+    '''
+    if examDate.startswith('TDF'):
+        return 'tdf'
+    
+    tokens = examDate.split(' ')
+    time = tokens[4].split('-')
+    return {
+        'day': tokens[0],
+        'month': str(MONTH_NAMES.index(tokens[1]) if tokens[1] in MONTH_NAMES else '-1'),
+        'year': tokens[2],
+        'time': {
+            'start': time[0],
+            'end': time[1],
+        }
+    }
+
+def _buildTimeRanges(time, days):
+    '''
+        time comes in this format:
+        9:30-11:00
+    '''
+    tokens = time.split('-')
+    if len(tokens) != 2:
+        return 'tdf'
+    
+    return [{
+        'day': DAY_NAMES_TRANSFORM.get(day, 'invalid-day'),
+        'start': tokens[0],
+        'end': tokens[1],
+    } for day in days]
 
 class Scraper():
     '''prog 'S'ทวิภาค 'T'ตรีภาค 'I'ทวิ-นานาชาติ,
@@ -64,8 +109,8 @@ class Scraper():
 
         datat4 = table4.find_all('font')
         result.update({
-            'midExam': datat4[1].get_text().strip(),
-            'finalExam' : datat4[3].get_text().strip(),
+            'midExamDate': _transformExamDate(datat4[1].get_text().strip()),
+            'finalExamDate' : _transformExamDate(datat4[3].get_text().strip()),
         })
 
         secs = []
@@ -78,13 +123,14 @@ class Scraper():
                         'status': ('open' if data[0].get_text().strip() == '' else 'close'),
                         'sectionNumber': re.search(r'\d+', data[1].get_text().strip()).group(),
                         'type': data[2].get_text().strip(),
-                        'day': data[3].get_text().strip().split(),
-                        'time': data[4].get_text().strip(),
                         'building': data[5].get_text().strip(),
                         'room': data[6].get_text().strip(),
                         'teacher': data[7].get_text().strip().split(','),
-                        'note': data[8].get_text().strip(),
-                        'seat': (data[9].get_text().strip() if len(data) > 9 else '')
+                        'remark': data[8].get_text().strip(),
+                        'seat': (data[9].get_text().strip() if len(data) > 9 else ''),
+                        # 'day': data[3].get_text().strip().split(),
+                        # 'time': data[4].get_text().strip(),
+                        'timeRanges': _buildTimeRanges(data[4].get_text().strip(), data[3].get_text().strip().split())
                     })
                 except:
                     pass
