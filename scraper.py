@@ -12,7 +12,7 @@ class Scraper():
     _courseurl = 'https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryCourseScheduleNew.CourseScheduleDtlNewServlet'
 
     def __init__(self, prog, year, semester):
-        self.sesion = requests.Session()
+        self.session = requests.Session()
         self.setprop(prog, year, semester)
 
     def setprop(self, prog, year, semester):
@@ -102,9 +102,9 @@ class Scraper():
             'coursetype': str(coursetype),
             'genedcode': str(genedcode)
         }
-        response = self.sesion.get(self._listurl, params=param)
+        response = self.session.get(self._listurl, params=param)
         if 'Set-cookie' in response.headers:
-            response = self.sesion.get(self._listurl, params=param)
+            response = self.session.get(self._listurl, params=param)
         return response.content.decode('thai')
 
     def getlist(self, courseno='', coursename='', coursetype='', genedcode=''):
@@ -123,7 +123,7 @@ class Scraper():
             'courseNo': str(courseno),
             'studyProgram': str(self.prog)
         }
-        response = self.sesion.get(self._courseurl, params=param)
+        response = self.session.get(self._courseurl, params=param)
         return response.content.decode('thai')
 
     def getcourseinfo(self, courseno):
