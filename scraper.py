@@ -120,8 +120,8 @@ class Scraper():
 
         datat4 = table4.find_all('font')
         result.update({
-            'midExamDate': _transformExamDate(datat4[1].get_text().strip()),
-            'finalExamDate' : _transformExamDate(datat4[3].get_text().strip()),
+            'midExam': _transformExamDate(datat4[1].get_text().strip()),
+            'finalExam' : _transformExamDate(datat4[3].get_text().strip()),
         })
 
         secs = []
