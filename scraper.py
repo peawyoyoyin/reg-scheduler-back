@@ -1,6 +1,8 @@
 import requests
 import bs4
 import re
+import datetime
+import calendar
 
 MONTH_NAMES = ['','ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
 DAY_NAMES_TRANSFORM = {
@@ -31,14 +33,14 @@ def _transformExamDate(examDate):
     
     tokens = examDate.split(' ')
     time = tokens[4].split('-')
+    month_name = str(MONTH_NAMES.index(tokens[1]) if tokens[1] in MONTH_NAMES else '-1')
+    day_index = datetime.datetime(int(tokens[2])-543, int(month_name), int(tokens[0])).weekday()
+    day_name = calendar.day_abbr[day_index].upper()
     return {
-        'day': tokens[0],
-        'month': str(MONTH_NAMES.index(tokens[1]) if tokens[1] in MONTH_NAMES else '-1'),
-        'year': tokens[2],
-        'time': {
-            'start': time[0],
-            'end': time[1],
-        }
+        'day': day_name,
+        'date': tokens[0].zfill(2) + '/' + month_name.zfill(2) + '/' + tokens[2],
+        'start': time[0],
+        'end': time[1],
     }
 
 def _buildTimeRanges(time, days):
