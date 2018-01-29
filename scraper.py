@@ -22,13 +22,10 @@ def _transformExamDate(examDate):
     '''
     if examDate.startswith('TDF'):
         return {
+            'date': 'tdf',
             'day': 'tdf',
-            'month': 'tdf',
-            'year': 'tdf',
-            'time': {
-                'start': 'tdf',
-                'end': 'tdf'
-            }
+            'start': 'tdf',
+            'end': 'tdf',
         }
     
     tokens = examDate.split(' ')
