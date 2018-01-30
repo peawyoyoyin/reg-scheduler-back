@@ -103,9 +103,10 @@ class Scraper():
         table3 = page.find(id='Table3')
 
         if (not table2) or (not table3) or (not table4):
-            return
+            return None
 
         datat2 = table2.find_all('font')
+        
         result.update({
             'yearSem': datat2[0].get_text().strip(),
             'prog': datat2[1].get_text().strip(),
@@ -147,6 +148,12 @@ class Scraper():
                     pass
         result.update({'sections': secs})
 
+        creditdata = page.select('table:nth-of-type(3)')[0].select('font')
+        result.update({
+            'credit': creditdata[0].get_text().strip(),
+            'condition': creditdata[5].get_text().strip()
+        })
+
         return result
 
     def _gethtmllist(self, courseno='', coursename='', coursetype='', genedcode=''):
@@ -187,8 +194,88 @@ class Scraper():
         '''return course info'''
         return Scraper._parsehtmlcourseinfo(self._gethtmlcourseinfo(courseno))
 
+    #building path
+    _buildingurl = 'https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryBuilding.QueryBuildingListServlet'
+    _buildinginfourl = 'https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryBuilding.QueryRoomListServlet'
+
+    @staticmethod
+    def _parsehtmlBuilding(html):
+        page = bs4.BeautifulSoup(html, 'html.parser')
+        table = page.select("table:nth-of-type(4)")
+        if not table:
+            return []
+        table = table[0]
+        rows = table.select('tr')
+        buildingList = []
+        for row in rows:
+            data = row.select('font')
+            buildingList.append({
+                'name': data[0].get_text().strip(),
+                'fullName': data[1].get_text().strip(),
+                'buildingNo': data[2].get_text().strip()
+            })
+        return buildingList
+
+
+    @staticmethod
+    def _parsehtmlBuildinginfo(html):
+        page = bs4.BeautifulSoup(html, 'html.parser')
+        rowsT1 = page.select("tr")[9:]
+        if not rowsT1:
+            return None
+        roomList = []
+        for idx, row in enumerate(rowsT1):
+            if idx > 0:
+                data = row.select('font')
+                roomList.append({
+                    'No.': data[0].get_text().strip(),
+                    'floor': data[1].get_text().strip(),
+                    'roomID': data[2].get_text().strip(),
+                    'roomType': data[3].get_text().strip(),
+                    'studySeat': data[4].get_text().strip(),
+                    'examSeat': data[5].get_text().strip()
+                })
+        dataBuilding = page.select("#Table2 font")
+        return {
+            'buildingNo': dataBuilding[0].get_text().strip(),
+            'name': {
+                'abbr':dataBuilding[4].get_text().strip(),
+                'th': dataBuilding[9].get_text().strip(),
+                'en': dataBuilding[12].get_text().strip(),
+            },
+            'faculty': dataBuilding[6].get_text().strip(),
+            'floorsNum': dataBuilding[15].get_text().strip(),
+            'roomsNum': dataBuilding[18].get_text().strip(),
+            'roomList': roomList
+        }
+
+
+    def _getBuildingListhtml(self, name):
+        param = {
+            'nameAbbr': name.upper()
+        }
+        response = self.session.get(self._buildingurl, params=param)
+        if 'Set-cookie' in response.headers:
+            response = self.session.get(self._buildingurl, params=param)
+        return response.content.decode('thai')
+
+    def _getBuildinginfohtml(self, buildingno):
+        param = {
+            'buildingno': str(buildingno)
+        }
+        response = self.session.get(self._buildinginfourl, params=param)
+        if 'Set-cookie' in response.headers:
+            response = self.session.get(self._buildinginfourl, params=param)
+        return response.content.decode('thai')
+
+    def getBuildingList(self, name):
+        return Scraper._parsehtmlBuilding(self._getBuildingListhtml(name))
+
+    def getBuildinginfo(self, buildingno):
+        return Scraper._parsehtmlBuildinginfo(self._getBuildinginfohtml(buildingno))
 
 if __name__ == '__main__':
     scp = Scraper('S', 2560, 2)
-    print(scp.getlist('2110332'))
-    print(scp.getcourseinfo('2110332'))
+    #print(scp.getlist('2110332'))
+    #print(scp.getcourseinfo('2110332'))
+    print(scp.getBuildinginfo('212'))
