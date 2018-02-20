@@ -30,7 +30,7 @@ def _transformExamDate(examDate):
             'start': 'tdf',
             'end': 'tdf',
         }
-    
+
     tokens = examDate.split(' ')
     time = tokens[4].split('-')
     month_name = str(MONTH_NAMES.index(tokens[1]) if tokens[1] in MONTH_NAMES else '-1')
@@ -55,7 +55,7 @@ def _buildTimeRanges(time, days):
             'start': 'tdf',
             'end' : 'tdf',
         }
-    
+
     return [{
         'day': DAY_NAMES_TRANSFORM.get(day, 'invalid-day'),
         'start': tokens[0],
@@ -110,7 +110,7 @@ class Scraper():
             return None
 
         datat2 = table2.find_all('font')
-        
+
         result.update({
             'yearSem': datat2[0].get_text().strip(),
             'prog': datat2[1].get_text().strip(),
@@ -120,7 +120,7 @@ class Scraper():
                 'th': datat2[4].get_text().strip(),
                 'en': datat2[5].get_text().strip(),
             },
-            'faculty': datat2[6].get_text().strip().replace('\xa0', ' ')
+            'faculty': datat2[6].get_text().strip().replace(u'\xa0',' ')
         })
 
         datat4 = table4.find_all('font')

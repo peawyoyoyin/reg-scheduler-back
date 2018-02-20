@@ -9,5 +9,7 @@
 tcl
 pyvenv.cfg
 .venv
+env
 pip-selfcheck.json
 /__pycache__/
+*.pyc

@@ -80,3 +80,7 @@ The backend for phootip/reg-scheduler. Functionalities include getting data from
       start
     }
     ```
+
+## Notes
+This project is currently broken due to this bug: https://github.com/shazow/urllib3/pull/1283.
+To solve this, edit the local files inside `lib/urllib3` (after installing) according to the pull request.
