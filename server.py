@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, render_template
+from flask_cors import CORS
 import json
 from scraper import Scraper
 
 scp = Scraper('S', 2560, 2)
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def apiInfoPage():

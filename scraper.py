@@ -1,4 +1,7 @@
+# coding: utf-8
+
 import requests
+import requests_toolbelt.adapters.appengine
 import bs4
 import re
 import datetime
@@ -68,6 +71,7 @@ class Scraper():
     _courseurl = 'https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryCourseScheduleNew.CourseScheduleDtlNewServlet'
 
     def __init__(self, prog, year, semester):
+        requests_toolbelt.adapters.appengine.monkeypatch()
         self.session = requests.Session()
         self.setprop(prog, year, semester)
 
