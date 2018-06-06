@@ -7,7 +7,7 @@ import re
 import datetime
 import calendar
 
-MONTH_NAMES = ['','ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+MONTH_NAMES = [u'',u'ม.ค.', u'ก.พ.', u'มี.ค.', u'เม.ย.', u'พ.ค.', u'มิ.ย.', u'ก.ค.', u'ส.ค.', u'ก.ย.', u'ต.ค.', u'พ.ย.', u'ธ.ค.']
 DAY_NAMES_TRANSFORM = {
     'MO': 'MON',
     'TU': 'TUE',
@@ -71,8 +71,9 @@ class Scraper():
     _courseurl = 'https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryCourseScheduleNew.CourseScheduleDtlNewServlet'
 
     def __init__(self, prog, year, semester):
-        requests_toolbelt.adapters.appengine.monkeypatch()
+        #requests_toolbelt.adapters.appengine.monkeypatch()
         self.session = requests.Session()
+        self.session.verify = False
         self.setprop(prog, year, semester)
 
     def setprop(self, prog, year, semester):
@@ -110,7 +111,7 @@ class Scraper():
             return None
 
         datat2 = table2.find_all('font')
-        
+
         result.update({
             'yearSem': datat2[0].get_text().strip(),
             'prog': datat2[1].get_text().strip(),
@@ -120,7 +121,7 @@ class Scraper():
                 'th': datat2[4].get_text().strip(),
                 'en': datat2[5].get_text().strip(),
             },
-            'faculty': datat2[6].get_text().strip().replace('\xa0', ' ')
+            'faculty': datat2[6].get_text().strip()
         })
 
         datat4 = table4.find_all('font')
@@ -280,6 +281,6 @@ class Scraper():
 
 if __name__ == '__main__':
     scp = Scraper('S', 2560, 2)
-    #print(scp.getlist('2110332'))
-    #print(scp.getcourseinfo('2110332'))
+    print(scp.getlist('2110332'))
+    print(scp.getcourseinfo('2110332')['faculty'])
     print(scp.getBuildinginfo('212'))
