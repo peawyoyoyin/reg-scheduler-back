@@ -1,7 +1,4 @@
 import requests
-from requests_toolbelt.adapters.appengine import monkeypatch
-
-monkeypatch()
 
 SESSION_URL = "https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryCourseScheduleNew.QueryCourseScheduleNewServlet"
 PARAM_BASEURL = "https://cas.reg.chula.ac.th/servlet/com.dtm.chula.cs.servlet.QueryCourseScheduleNew.CourseListNewServlet"
