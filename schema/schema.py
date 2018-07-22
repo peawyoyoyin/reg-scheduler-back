@@ -13,9 +13,9 @@ fetcher = Fetcher()
 
 class Query(graphene.ObjectType):
     courses = graphene.List(CourseListItem, \
-        semester=graphene.Int(required=True), year=graphene.Int(required=True), course_number=graphene.Int())
+        semester=graphene.Int(required=True), year=graphene.Int(required=True), course_number=graphene.String())
     course = graphene.Field(Course, \
-        semester=graphene.Int(required=True), year=graphene.Int(required=True), course_number=graphene.Int(required=True))
+        semester=graphene.Int(required=True), year=graphene.Int(required=True), course_number=graphene.String(required=True))
 
     def resolve_courses(self, info, semester, year, course_number=''):
         raw = fetcher.get_course_list(semester, year, course_number)
