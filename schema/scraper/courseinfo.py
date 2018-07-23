@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from .base import BaseScraper
+from .base import BaseScraper, return_blank_on_fail, fallback_to
 
 class CourseInfo(BaseScraper):
     def __repr__(self):
@@ -62,33 +62,49 @@ class SectionItem(BaseScraper):
 
     @property
     def section_number(self):
-        return self._soup.select('font')[0].text.strip()
+        raw = self._soup.select('font')[0].text.strip()
+        try:
+            return str(int(raw))
+        except:
+            return '-1'
     
     @property
     def days(self):
+        if self.section_number == '-1':
+            return self._soup.select('font')[1].text.strip().split()
         return self._soup.select('font')[2].text.strip().split()
     
     @property
     def time(self):
+        if self.section_number == '-1':
+            return self._soup.select('font')[2].text.strip()
         return self._soup.select('font')[3].text.strip()
     
     @property
     def building(self):
+        if self.section_number == '-1':
+            return self._soup.select('font')[3].text.strip()
         return self._soup.select('font')[4].text.strip()
     
     @property
     def room(self):
+        if self.section_number == '-1':
+            return self._soup.select('font')[4].text.strip()
         return self._soup.select('font')[5].text.strip()
     
     @property
     def teacher(self):
+        if self.section_number == '-1':
+            return self._soup.select('font')[5].text.strip()
         return self._soup.select('font')[6].text.strip()
     
     @property
+    @return_blank_on_fail
     def notes(self):
         return self._soup.select('font')[7].text.strip()
     
     @property
+    @fallback_to('0')
     def capacity(self):
         return self._soup.select('font')[8].text.split('/')[1]
 
